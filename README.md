@@ -1,6 +1,6 @@
 # SnowModManager
 
-[ÖÐÎÄREADME](README_CN.md)
+[ä¸­æ–‡README](README_CN.md)
 
 ## Features
 
