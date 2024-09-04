@@ -1,5 +1,8 @@
 # SnowModManager
 
+![](https://img.shields.io/github/downloads/kirileec/SnowModManager/total)
+![](https://img.shields.io/github/license/kirileec/SnowModManager)
+
 [中文README](README_CN.md)
 
 ## Features
