@@ -33,6 +33,7 @@
             DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle3 = new DataGridViewCellStyle();
             DataGridViewCellStyle dataGridViewCellStyle4 = new DataGridViewCellStyle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             textBox1 = new TextBox();
             openFileDialog1 = new OpenFileDialog();
             button1 = new Button();
@@ -43,9 +44,9 @@
             descDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             enabledDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
             editTimeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            modBindingSource = new BindingSource(components);
             contextMenuStrip1 = new ContextMenuStrip(components);
             备注modToolStripMenuItem = new ToolStripMenuItem();
-            modBindingSource = new BindingSource(components);
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
@@ -55,8 +56,8 @@
             功能ToolStripMenuItem = new ToolStripMenuItem();
             关于ToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
-            contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)modBindingSource).BeginInit();
+            contextMenuStrip1.SuspendLayout();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
             SuspendLayout();
@@ -163,6 +164,10 @@
             editTimeDataGridViewTextBoxColumn.Name = "editTimeDataGridViewTextBoxColumn";
             editTimeDataGridViewTextBoxColumn.Width = 300;
             // 
+            // modBindingSource
+            // 
+            modBindingSource.DataSource = typeof(Mod);
+            // 
             // contextMenuStrip1
             // 
             contextMenuStrip1.ImageScalingSize = new Size(32, 32);
@@ -176,10 +181,6 @@
             备注modToolStripMenuItem.Size = new Size(188, 38);
             备注modToolStripMenuItem.Text = "备注mod";
             备注modToolStripMenuItem.Click += 备注modToolStripMenuItem_Click;
-            // 
-            // modBindingSource
-            // 
-            modBindingSource.DataSource = typeof(Mod);
             // 
             // statusStrip1
             // 
@@ -261,6 +262,7 @@
             Controls.Add(button1);
             Controls.Add(textBox1);
             Font = new Font("Microsoft YaHei UI", 12F, FontStyle.Regular, GraphicsUnit.Point, 134);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             MainMenuStrip = menuStrip1;
             Margin = new Padding(4);
             Name = "Form1";
@@ -268,8 +270,8 @@
             Text = "尘白禁区mod管理工具 v0.2";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
-            contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)modBindingSource).EndInit();
+            contextMenuStrip1.ResumeLayout(false);
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
             menuStrip1.ResumeLayout(false);

@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             comboBox1 = new ComboBox();
             button1 = new Button();
             button2 = new Button();
@@ -94,6 +95,7 @@
             Controls.Add(button1);
             Controls.Add(comboBox1);
             Font = new Font("Microsoft YaHei UI", 10.5F, FontStyle.Regular, GraphicsUnit.Point, 134);
+            Icon = (Icon)resources.GetObject("$this.Icon");
             Margin = new Padding(4, 3, 4, 3);
             Name = "Form2";
             StartPosition = FormStartPosition.CenterScreen;
