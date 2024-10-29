@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -42,6 +43,18 @@ namespace SnowModManager
         /// </summary>
         [Description("角色(分类)")]
         public string Category { get; set; }
+
+        /// <summary>
+        /// key
+        /// </summary>
+        [Description("key")]
+        public string Key { get {
+                return Name.MD5Hash();
+            }
+            set {
+                Key = value;
+            } 
+        }
 
         public override string ToString()
         {

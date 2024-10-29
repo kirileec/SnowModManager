@@ -32,6 +32,7 @@
             button1 = new Button();
             button2 = new Button();
             label1 = new Label();
+            textBox1 = new TextBox();
             SuspendLayout();
             // 
             // comboBox1
@@ -46,7 +47,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(33, 173);
+            button1.Location = new Point(33, 221);
             button1.Name = "button1";
             button1.Size = new Size(212, 46);
             button1.TabIndex = 1;
@@ -56,7 +57,7 @@
             // 
             // button2
             // 
-            button2.Location = new Point(341, 173);
+            button2.Location = new Point(341, 221);
             button2.Name = "button2";
             button2.Size = new Size(212, 46);
             button2.TabIndex = 2;
@@ -68,17 +69,26 @@
             // 
             label1.AutoSize = true;
             label1.ForeColor = Color.IndianRed;
-            label1.Location = new Point(23, 279);
+            label1.Location = new Point(23, 327);
             label1.Name = "label1";
             label1.Size = new Size(546, 36);
             label1.TabIndex = 3;
             label1.Text = "分类即子目录, 留空则直接放置在~mods下";
             // 
+            // textBox1
+            // 
+            textBox1.Location = new Point(32, 154);
+            textBox1.Name = "textBox1";
+            textBox1.PlaceholderText = "mod备注";
+            textBox1.Size = new Size(521, 43);
+            textBox1.TabIndex = 4;
+            // 
             // Form2
             // 
             AutoScaleDimensions = new SizeF(17F, 36F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(590, 354);
+            ClientSize = new Size(588, 386);
+            Controls.Add(textBox1);
             Controls.Add(label1);
             Controls.Add(button2);
             Controls.Add(button1);
@@ -98,5 +108,6 @@
         private Button button1;
         private Button button2;
         private Label label1;
+        private TextBox textBox1;
     }
 }

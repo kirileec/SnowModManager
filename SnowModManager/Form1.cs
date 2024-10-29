@@ -1,6 +1,7 @@
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.IO;
+using System.Text.Json;
 using System.Windows.Forms;
 
 namespace SnowModManager
@@ -16,8 +17,41 @@ namespace SnowModManager
         private string modsPath;
         private string lastGamePath;
 
+        private Dictionary<string,string> keyValuePairs = new Dictionary<string, string>();
+        private void LoadDescs()
+        {
+            if (File.Exists("db.json"))
+            {
+                var content = File.ReadAllText("db.json");
+                keyValuePairs = new Dictionary<string, string>();
+                keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(content);
+            } else
+            {
+                keyValuePairs = new Dictionary<string, string>();
+            }
+            
+        }
+        private void SaveDescs()
+        {
+            if (modList == null)
+            {
+                return;
+            }
+            foreach (Mod mod in modList) { 
+                if (mod.Desc.Trim()!="")
+                {
+                    var b = keyValuePairs.TryAdd(mod.Key, mod.Desc);
+                    if (!b) {
+                        keyValuePairs[mod.Key] = mod.Desc;
+                    }
+                }
+            }
+            var content = JsonSerializer.Serialize(keyValuePairs);
+            File.WriteAllText("db.json", content);
+        }
         private void LoadMods()
         {
+            LoadDescs();
             if (this.textBox1.Text == "")
             {
 
@@ -57,9 +91,10 @@ namespace SnowModManager
                 {
                     Mod mod = new Mod();
                     mod.Name = Path.GetFileNameWithoutExtension(modFile);
-
+                    string desc = "";
+                    keyValuePairs.TryGetValue(mod.Key, out desc);
                     mod.FullPath = modFile;
-                    mod.Desc = "";
+                    mod.Desc = desc==null ? "" : desc;
                     mod.Enabled = !modFile.EndsWith(".disable");
                     mod.Path = Path.GetRelativePath(modsPath, modFile).Replace(".disable", "");
                     if (mod.Path.Contains(Path.DirectorySeparatorChar))
@@ -212,11 +247,6 @@ namespace SnowModManager
             {
                 return;
             }
-            //var str = "你要将下列mod文件安装吗?\n";
-            //foreach (var item in files)
-            //{
-            //    str += item + "\n";
-            //}
 
             Form2 form2 = new Form2();
             var dialogResult = form2.ShowDialog();
@@ -231,22 +261,13 @@ namespace SnowModManager
                         dstPath = Path.Join(dstPath, form2.Category);
                         Directory.CreateDirectory(dstPath);
                     }
+                  
                     dstPath = Path.Join(dstPath, fileName);
                     File.Copy(item, dstPath);
                 }
                 LoadMods();
 
             }
-            //var result = MessageBox.Show(str, "提示", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            //if (result == DialogResult.Yes)
-            //{
-
-
-
-
-            //}
-
-
 
         }
 
@@ -266,12 +287,50 @@ namespace SnowModManager
 
         private void 功能ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("1. 记录上次选择的游戏目录\n2. 拖拽pak文件安装mod\n3. 按照角色名(分类)管理mod\n4. 管理员权限运行支持自动获取游戏目录(拖拽会失效)\n5. 随时启用或禁用一个mod, 需重进游戏\n6. 监听mod目录, 自动刷新");
+            MessageBox.Show("1. 记录上次选择的游戏目录\n2. 拖拽pak文件安装mod\n3. 按照角色名(分类)管理mod\n4. 管理员权限运行支持自动获取游戏目录(拖拽会失效)\n5. 随时启用或禁用一个mod, 需重进游戏\n6. 监听mod目录, 自动刷新\n7. 备注mod");
         }
 
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("尘白禁区mod管理工具 v0.1");
+            MessageBox.Show("尘白禁区mod管理工具 v0.2");
+        }
+
+        private void 备注modToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var rowToDesc = dataGridView1.Rows.GetFirstRow(DataGridViewElementStates.Selected);
+            if (rowToDesc > this.modList.Count - 1)
+            {
+                return;
+            }
+            Form2 form2 = new Form2();
+            var cat = (this.modList[rowToDesc] as Mod).Category;
+            var desc = (this.modList[rowToDesc] as Mod).Desc;
+            var result = form2.ShowWithData(cat, desc);
+            if (result == DialogResult.OK)
+            {
+                (this.modList[rowToDesc] as Mod).Category = form2.Category;
+                (this.modList[rowToDesc] as Mod).Desc = form2.Desc;
+            }
+            SaveDescs();
+            LoadMods();
+            //dataGridView1.ClearSelection();
+        }
+
+        private void dataGridView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                var hit = dataGridView1.HitTest(e.X, e.Y);
+                if (hit.RowIndex==-1)
+                {
+                    return ;
+                }
+                dataGridView1.ClearSelection();
+                dataGridView1.Rows[hit.RowIndex].Selected = true;
+
+                contextMenuStrip1.Show(Control.MousePosition);
+            }
+            
         }
     }
 }

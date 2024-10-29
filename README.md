@@ -13,10 +13,11 @@
 4. auto fetch game directory from registry when running with administrator, but `drag and drop` will be invalid
 5. enable or disable a mod easily
 6. watch mod directory changes, auto reload
+7. comment a mod
 
 ## TODO
 
-- [ ] comment your mods
+- [x] comment your mods
 - [ ] localization (maybe)
 
 

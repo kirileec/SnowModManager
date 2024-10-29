@@ -43,6 +43,8 @@
             descDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
             enabledDataGridViewCheckBoxColumn = new DataGridViewCheckBoxColumn();
             editTimeDataGridViewTextBoxColumn = new DataGridViewTextBoxColumn();
+            contextMenuStrip1 = new ContextMenuStrip(components);
+            备注modToolStripMenuItem = new ToolStripMenuItem();
             modBindingSource = new BindingSource(components);
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
@@ -53,6 +55,7 @@
             功能ToolStripMenuItem = new ToolStripMenuItem();
             关于ToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)modBindingSource).BeginInit();
             statusStrip1.SuspendLayout();
             menuStrip1.SuspendLayout();
@@ -95,13 +98,14 @@
             dataGridView1.MultiSelect = false;
             dataGridView1.Name = "dataGridView1";
             dataGridView1.RowHeadersWidth = 82;
-            dataGridView1.SelectionMode = DataGridViewSelectionMode.CellSelect;
+            dataGridView1.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView1.ShowEditingIcon = false;
             dataGridView1.Size = new Size(2254, 930);
             dataGridView1.TabIndex = 2;
             dataGridView1.CellContentClick += dataGridView1_CellContentClick;
             dataGridView1.DragDrop += dataGridView1_DragDrop;
             dataGridView1.DragEnter += dataGridView1_DragEnter;
+            dataGridView1.MouseClick += dataGridView1_MouseClick;
             // 
             // categoryDataGridViewTextBoxColumn
             // 
@@ -159,6 +163,20 @@
             editTimeDataGridViewTextBoxColumn.Name = "editTimeDataGridViewTextBoxColumn";
             editTimeDataGridViewTextBoxColumn.Width = 300;
             // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.ImageScalingSize = new Size(32, 32);
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { 备注modToolStripMenuItem });
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(189, 42);
+            // 
+            // 备注modToolStripMenuItem
+            // 
+            备注modToolStripMenuItem.Name = "备注modToolStripMenuItem";
+            备注modToolStripMenuItem.Size = new Size(188, 38);
+            备注modToolStripMenuItem.Text = "备注mod";
+            备注modToolStripMenuItem.Click += 备注modToolStripMenuItem_Click;
+            // 
             // modBindingSource
             // 
             modBindingSource.DataSource = typeof(Mod);
@@ -212,21 +230,21 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { 功能ToolStripMenuItem, 关于ToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(2266, 42);
+            menuStrip1.Size = new Size(2266, 39);
             menuStrip1.TabIndex = 6;
             menuStrip1.Text = "menuStrip1";
             // 
             // 功能ToolStripMenuItem
             // 
             功能ToolStripMenuItem.Name = "功能ToolStripMenuItem";
-            功能ToolStripMenuItem.Size = new Size(82, 38);
+            功能ToolStripMenuItem.Size = new Size(82, 35);
             功能ToolStripMenuItem.Text = "功能";
             功能ToolStripMenuItem.Click += 功能ToolStripMenuItem_Click;
             // 
             // 关于ToolStripMenuItem
             // 
             关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            关于ToolStripMenuItem.Size = new Size(82, 38);
+            关于ToolStripMenuItem.Size = new Size(82, 35);
             关于ToolStripMenuItem.Text = "关于";
             关于ToolStripMenuItem.Click += 关于ToolStripMenuItem_Click;
             // 
@@ -247,9 +265,10 @@
             Margin = new Padding(4);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "尘白禁区mod管理工具 v0.1";
+            Text = "尘白禁区mod管理工具 v0.2";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)modBindingSource).EndInit();
             statusStrip1.ResumeLayout(false);
             statusStrip1.PerformLayout();
@@ -280,5 +299,7 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem 功能ToolStripMenuItem;
         private ToolStripMenuItem 关于ToolStripMenuItem;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem 备注modToolStripMenuItem;
     }
 }
