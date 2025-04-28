@@ -47,14 +47,16 @@
             modBindingSource = new BindingSource(components);
             contextMenuStrip1 = new ContextMenuStrip(components);
             备注modToolStripMenuItem = new ToolStripMenuItem();
+            删除modToolStripMenuItem = new ToolStripMenuItem();
             statusStrip1 = new StatusStrip();
             toolStripStatusLabel2 = new ToolStripStatusLabel();
             toolStripStatusLabel1 = new ToolStripStatusLabel();
             label1 = new Label();
             button2 = new Button();
             menuStrip1 = new MenuStrip();
-            功能ToolStripMenuItem = new ToolStripMenuItem();
-            关于ToolStripMenuItem = new ToolStripMenuItem();
+            MainToolStripMenuItem = new ToolStripMenuItem();
+            AboutToolStripMenuItem = new ToolStripMenuItem();
+            批量改名ToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)modBindingSource).BeginInit();
             contextMenuStrip1.SuspendLayout();
@@ -64,10 +66,10 @@
             // 
             // textBox1
             // 
-            textBox1.Location = new Point(79, 49);
+            textBox1.Location = new Point(13, 46);
             textBox1.Margin = new Padding(4);
             textBox1.Name = "textBox1";
-            textBox1.Size = new Size(1044, 48);
+            textBox1.Size = new Size(803, 48);
             textBox1.TabIndex = 0;
             // 
             // openFileDialog1
@@ -76,7 +78,7 @@
             // 
             // button1
             // 
-            button1.Location = new Point(1158, 49);
+            button1.Location = new Point(823, 42);
             button1.Name = "button1";
             button1.Size = new Size(267, 52);
             button1.TabIndex = 1;
@@ -171,9 +173,9 @@
             // contextMenuStrip1
             // 
             contextMenuStrip1.ImageScalingSize = new Size(32, 32);
-            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { 备注modToolStripMenuItem });
+            contextMenuStrip1.Items.AddRange(new ToolStripItem[] { 备注modToolStripMenuItem, 删除modToolStripMenuItem });
             contextMenuStrip1.Name = "contextMenuStrip1";
-            contextMenuStrip1.Size = new Size(189, 42);
+            contextMenuStrip1.Size = new Size(189, 80);
             // 
             // 备注modToolStripMenuItem
             // 
@@ -181,6 +183,13 @@
             备注modToolStripMenuItem.Size = new Size(188, 38);
             备注modToolStripMenuItem.Text = "备注mod";
             备注modToolStripMenuItem.Click += 备注modToolStripMenuItem_Click;
+            // 
+            // 删除modToolStripMenuItem
+            // 
+            删除modToolStripMenuItem.Name = "删除modToolStripMenuItem";
+            删除modToolStripMenuItem.Size = new Size(188, 38);
+            删除modToolStripMenuItem.Text = "删除mod";
+            删除modToolStripMenuItem.Click += 删除modToolStripMenuItem_Click;
             // 
             // statusStrip1
             // 
@@ -209,15 +218,15 @@
             // 
             label1.AutoSize = true;
             label1.ForeColor = SystemColors.Highlight;
-            label1.Location = new Point(1748, 49);
+            label1.Location = new Point(1429, 46);
             label1.Name = "label1";
-            label1.Size = new Size(506, 41);
+            label1.Size = new Size(616, 41);
             label1.TabIndex = 4;
-            label1.Text = "拖拽pak文件到下方, 可以直接安装";
+            label1.Text = "拖拽pak/压缩包文件到下方, 可以直接安装";
             // 
             // button2
             // 
-            button2.Location = new Point(1443, 52);
+            button2.Location = new Point(1112, 42);
             button2.Name = "button2";
             button2.Size = new Size(263, 46);
             button2.TabIndex = 5;
@@ -228,26 +237,34 @@
             // menuStrip1
             // 
             menuStrip1.ImageScalingSize = new Size(32, 32);
-            menuStrip1.Items.AddRange(new ToolStripItem[] { 功能ToolStripMenuItem, 关于ToolStripMenuItem });
+            menuStrip1.Items.AddRange(new ToolStripItem[] { MainToolStripMenuItem, AboutToolStripMenuItem, 批量改名ToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Size = new Size(2266, 39);
             menuStrip1.TabIndex = 6;
             menuStrip1.Text = "menuStrip1";
+            menuStrip1.ItemClicked += menuStrip1_ItemClicked;
             // 
-            // 功能ToolStripMenuItem
+            // MainToolStripMenuItem
             // 
-            功能ToolStripMenuItem.Name = "功能ToolStripMenuItem";
-            功能ToolStripMenuItem.Size = new Size(82, 35);
-            功能ToolStripMenuItem.Text = "功能";
-            功能ToolStripMenuItem.Click += 功能ToolStripMenuItem_Click;
+            MainToolStripMenuItem.Name = "MainToolStripMenuItem";
+            MainToolStripMenuItem.Size = new Size(82, 35);
+            MainToolStripMenuItem.Text = "功能";
+            MainToolStripMenuItem.Click += 功能ToolStripMenuItem_Click;
             // 
-            // 关于ToolStripMenuItem
+            // AboutToolStripMenuItem
             // 
-            关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            关于ToolStripMenuItem.Size = new Size(82, 35);
-            关于ToolStripMenuItem.Text = "关于";
-            关于ToolStripMenuItem.Click += 关于ToolStripMenuItem_Click;
+            AboutToolStripMenuItem.Name = "AboutToolStripMenuItem";
+            AboutToolStripMenuItem.Size = new Size(82, 35);
+            AboutToolStripMenuItem.Text = "关于";
+            AboutToolStripMenuItem.Click += 关于ToolStripMenuItem_Click;
+            // 
+            // 批量改名ToolStripMenuItem
+            // 
+            批量改名ToolStripMenuItem.Name = "批量改名ToolStripMenuItem";
+            批量改名ToolStripMenuItem.Size = new Size(130, 35);
+            批量改名ToolStripMenuItem.Text = "批量改名";
+            批量改名ToolStripMenuItem.Click += 批量改名ToolStripMenuItem_Click;
             // 
             // Form1
             // 
@@ -267,7 +284,7 @@
             Margin = new Padding(4);
             Name = "Form1";
             StartPosition = FormStartPosition.CenterScreen;
-            Text = "尘白禁区mod管理工具 v0.2";
+            Text = "尘白禁区mod管理工具 v0.3";
             Load += Form1_Load;
             ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
             ((System.ComponentModel.ISupportInitialize)modBindingSource).EndInit();
@@ -299,9 +316,11 @@
         private Label label1;
         private Button button2;
         private MenuStrip menuStrip1;
-        private ToolStripMenuItem 功能ToolStripMenuItem;
-        private ToolStripMenuItem 关于ToolStripMenuItem;
+        private ToolStripMenuItem MainToolStripMenuItem;
+        private ToolStripMenuItem AboutToolStripMenuItem;
         private ContextMenuStrip contextMenuStrip1;
         private ToolStripMenuItem 备注modToolStripMenuItem;
+        private ToolStripMenuItem 批量改名ToolStripMenuItem;
+        private ToolStripMenuItem 删除modToolStripMenuItem;
     }
 }

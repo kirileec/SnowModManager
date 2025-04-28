@@ -39,7 +39,7 @@
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "通用", "恩雅", "里芙", "芬妮", "琴诺", "爱思特", "卡罗琳", "凯茜娅", "薇蒂雅", "茉莉安", "辰星", "瑟瑞斯", "安卡希雅", "芙提雅", "晴", "肴", "猫汐尔", "伊切尔", "妮塔" });
+            comboBox1.Items.AddRange(new object[] { "通用", "恩雅", "里芙", "芬妮", "琴诺", "爱思特", "卡罗琳", "凯茜娅", "薇蒂雅", "茉莉安", "辰星", "瑟瑞斯", "安卡希雅", "芙提雅", "晴", "肴", "猫汐尔", "伊切尔", "妮塔", "奈莉德", "仆仆" });
             comboBox1.Location = new Point(33, 62);
             comboBox1.Margin = new Padding(4, 3, 4, 3);
             comboBox1.Name = "comboBox1";

@@ -1,4 +1,5 @@
 using Microsoft.Win32;
+using SevenZipExtractor;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
@@ -17,7 +18,7 @@ namespace SnowModManager
         private string modsPath;
         private string lastGamePath;
 
-        private Dictionary<string,string> keyValuePairs = new Dictionary<string, string>();
+        private Dictionary<string, string> keyValuePairs = new Dictionary<string, string>();
         private void LoadDescs()
         {
             if (File.Exists("db.json"))
@@ -25,11 +26,12 @@ namespace SnowModManager
                 var content = File.ReadAllText("db.json");
                 keyValuePairs = new Dictionary<string, string>();
                 keyValuePairs = JsonSerializer.Deserialize<Dictionary<string, string>>(content);
-            } else
+            }
+            else
             {
                 keyValuePairs = new Dictionary<string, string>();
             }
-            
+
         }
         private void SaveDescs()
         {
@@ -37,11 +39,13 @@ namespace SnowModManager
             {
                 return;
             }
-            foreach (Mod mod in modList) { 
-                if (mod.Desc.Trim()!="")
+            foreach (Mod mod in modList)
+            {
+                if (mod.Desc.Trim() != "")
                 {
                     var b = keyValuePairs.TryAdd(mod.Key, mod.Desc);
-                    if (!b) {
+                    if (!b)
+                    {
                         keyValuePairs[mod.Key] = mod.Desc;
                     }
                 }
@@ -49,6 +53,7 @@ namespace SnowModManager
             var content = JsonSerializer.Serialize(keyValuePairs);
             File.WriteAllText("db.json", content);
         }
+        private int focusIndex = -1;
         private void LoadMods()
         {
             LoadDescs();
@@ -89,12 +94,16 @@ namespace SnowModManager
                 var modFiles = Directory.EnumerateFiles(modsPath, "*.pak*", SearchOption.AllDirectories);
                 foreach (var modFile in modFiles)
                 {
+                    if (modFile.EndsWith(".ignore"))
+                    {
+                        continue;
+                    }
                     Mod mod = new Mod();
                     mod.Name = Path.GetFileNameWithoutExtension(modFile);
                     string desc = "";
                     keyValuePairs.TryGetValue(mod.Key, out desc);
                     mod.FullPath = modFile;
-                    mod.Desc = desc==null ? "" : desc;
+                    mod.Desc = desc == null ? "" : desc;
                     mod.Enabled = !modFile.EndsWith(".disable");
                     mod.Path = Path.GetRelativePath(modsPath, modFile).Replace(".disable", "");
                     if (mod.Path.Contains(Path.DirectorySeparatorChar))
@@ -130,6 +139,10 @@ namespace SnowModManager
                     watcher.Created += FileSystemWatcher_Changed;
                 }
 
+                if (focusIndex != -1)
+                {
+                    dataGridView1.Rows[focusIndex].Selected = true;
+                }
             }
 
         }
@@ -158,7 +171,7 @@ namespace SnowModManager
                     textBox1.Text = lastGamePath;
                 }
             }
-
+            focusIndex = -1;
             LoadMods();
         }
         private string CheckGameDir(string RegistFileName = "ProjectSnow", string RegistKeyName = "InstPath")
@@ -194,6 +207,7 @@ namespace SnowModManager
                 var tmp = openFileDialog1.FileName;
                 tmp = Path.GetDirectoryName(tmp);
                 this.textBox1.Text = tmp;
+                focusIndex = -1;
                 LoadMods();
             }
         }
@@ -229,7 +243,7 @@ namespace SnowModManager
             {
                 File.Move(mod.FullPath, mod.FullPath.Replace(".disable", ""));
             }
-
+            focusIndex = dataIndex;
             LoadMods();
 
             //MessageBox.Show($"{dataIndex} is changed: {this.modList[dataIndex]}");
@@ -247,6 +261,49 @@ namespace SnowModManager
             {
                 return;
             }
+            var isTmp = false;
+            if (files.Length == 1)
+            {
+                if (!files[0].EndsWith(".pak") && !files[0].EndsWith(".zip") && !files[0].EndsWith(".7z"))
+                {
+                    MessageBox.Show("请拖拽pak文件或zip/7z压缩包");
+                    return;
+                }
+                if (Path.GetExtension(files[0]) == ".zip" || Path.GetExtension(files[0]) == ".7z")
+                {
+                    var zipPath = files[0];
+                    DirectoryInfo di;
+                    if (!Directory.Exists("tmp"))
+                    {
+                        di = Directory.CreateDirectory("tmp");
+                    }
+                    else
+                    {
+                        di = new DirectoryInfo("tmp");
+                    }
+                    //System.IO.Compression.ZipFile.ExtractToDirectory(zipPath, di.FullName);
+                    using (ArchiveFile archiveFile = new ArchiveFile(zipPath))
+                    {
+                        archiveFile.Extract(di.FullName);
+                    }
+                    var modFiles = Directory.EnumerateFiles(di.FullName, "*.pak", SearchOption.AllDirectories);
+                    files = modFiles.ToArray();
+                    isTmp = true;
+                }
+            }
+            else if (files.Length > 1)
+            {
+                foreach (var item in files)
+                {
+                    if (item.EndsWith(".zip"))
+                    {
+                        MessageBox.Show("请拖拽单个zip压缩包");
+                        return;
+                    }
+                }
+            }
+
+
 
             Form2 form2 = new Form2();
             var dialogResult = form2.ShowDialog();
@@ -256,14 +313,39 @@ namespace SnowModManager
                 {
                     var dstPath = this.modsPath;
                     var fileName = Path.GetFileName(item);
+
+                    if (fileName.EndsWith("_100_P.pak"))
+                    {
+
+                    }
+                    else if (fileName.EndsWith("_P.pak"))
+                    {
+                        fileName = fileName.Replace("_P.pak", "_100_P.pak");
+                    }
+                    if (fileName.EndsWith("_100_p.pak"))
+                    {
+
+                    }
+                    else if (fileName.EndsWith("_p.pak"))
+                    {
+                        fileName = fileName.Replace("_p.pak", "_100_P.pak");
+                    }
                     if (form2.Category != "")
                     {
                         dstPath = Path.Join(dstPath, form2.Category);
                         Directory.CreateDirectory(dstPath);
                     }
-                  
+
                     dstPath = Path.Join(dstPath, fileName);
-                    File.Copy(item, dstPath);
+                    if (isTmp)
+                    {
+                        File.Move(item, dstPath);
+                    }
+                    else
+                    {
+                        File.Copy(item, dstPath);
+                    }
+
                 }
                 LoadMods();
 
@@ -292,7 +374,7 @@ namespace SnowModManager
 
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("尘白禁区mod管理工具 v0.2");
+            MessageBox.Show("尘白禁区mod管理工具 v0.3");
         }
 
         private void 备注modToolStripMenuItem_Click(object sender, EventArgs e)
@@ -312,6 +394,7 @@ namespace SnowModManager
                 (this.modList[rowToDesc] as Mod).Desc = form2.Desc;
             }
             SaveDescs();
+            focusIndex = rowToDesc;
             LoadMods();
             //dataGridView1.ClearSelection();
         }
@@ -321,16 +404,69 @@ namespace SnowModManager
             if (e.Button == MouseButtons.Right)
             {
                 var hit = dataGridView1.HitTest(e.X, e.Y);
-                if (hit.RowIndex==-1)
+                if (hit.RowIndex == -1)
                 {
-                    return ;
+                    return;
                 }
                 dataGridView1.ClearSelection();
                 dataGridView1.Rows[hit.RowIndex].Selected = true;
+                focusIndex = hit.RowIndex;
 
                 contextMenuStrip1.Show(Control.MousePosition);
             }
-            
+
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void 批量改名ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var dr = MessageBox.Show("批量修改mod文件名吗? \n这是2.7版本之后需要进行的操作, 否则进游戏会提示Game resources broken, 批量将文件名修改为 xxxx_100_P.pak. \n 参考https://www.nexusmods.com/snowbreakcontainmentzone/mods/552", "提示", MessageBoxButtons.OKCancel);
+            if (dr == DialogResult.OK)
+            {
+                watcher = null;
+
+                var modFiles = Directory.EnumerateFiles(modsPath, "*.pak*", SearchOption.AllDirectories);
+                foreach (var modFile in modFiles)
+                {
+                    var ext = Path.GetExtension(modFile);
+                    if (ext == ".pak")
+                    {
+                        var fileName = Path.GetFileNameWithoutExtension(modFile);
+                        if (fileName.Contains("_100_P"))
+                        {
+                            continue; //skip
+                        }
+                        fileName = fileName.Replace("_100_P", "");
+                        fileName = fileName.Replace("_P", "");
+                        fileName = fileName.Replace("_p", "");
+                        var newFileName = fileName + "_100_P" + ext;
+                        var newPath = Path.Join(Path.GetDirectoryName(modFile), newFileName);
+                        File.Move(modFile, newPath);
+                    }
+                }
+                MessageBox.Show("批量改名完成, 请重启程序");
+
+
+            }
+        }
+
+        private void 删除modToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var rowToDesc = dataGridView1.Rows.GetFirstRow(DataGridViewElementStates.Selected);
+            if (rowToDesc > this.modList.Count - 1)
+            {
+                return;
+            }
+
+            var mod = (this.modList[rowToDesc] as Mod);
+            File.Move(mod.FullPath, mod.FullPath + ".ignore");
+
+            focusIndex = rowToDesc-1;
+            LoadMods();
         }
     }
 }
